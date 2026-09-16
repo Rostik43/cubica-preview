@@ -1,33 +1,47 @@
 // Кубика, вариант 3: общие части страниц (пиктограммы, меню, заставка, фильтры, поиск).
 (function () {
-  // Пиктограммы проектов: простая геометрия 40×40, белая линия на gunmetal
-  var P = {
-    krasnaya: '<path d="M9 31V11h22v20M16 31v-7a4 4 0 0 1 8 0v7"/>',
-    loft: '<rect x="9" y="9" width="22" height="22"/><rect x="15" y="15" width="10" height="10"/>',
-    sun: '<circle cx="20" cy="15" r="5"/><path d="M9 25h22M9 31h22"/>',
-    scand: '<path d="M9 31V18l5.5-7 5.5 7 5.5-7 5.5 7v13z"/>',
-    nevsky: '<path d="M9 31v-9h7v-6h7v-7h8v22z"/>',
-    sunvill: '<circle cx="27" cy="13" r="4"/><path d="M9 31V19h9v12M18 31V23h8v8"/>',
-    kquarter: '<path d="M9 31V10h8v21M21 31V15h10v16"/>',
-    ktowers: '<path d="M10 31V8h6v23M20 31V17h11v14"/>',
-    kevening: '<path d="M9 31V19h11v12M22 31V9h9v22"/><rect class="f" x="25" y="13" width="3" height="3"/>',
-    kcourt: '<path d="M9 14h22M9 20h22M13 14v17M27 14v17"/>',
-    kplan: '<rect x="9" y="9" width="22" height="22"/><path d="M20 9v22M9 20h22"/><rect class="f" x="12" y="12" width="5" height="5"/>'
+  // Значки проектов: объёмные схемы из изометрических блоков [x, y, z, ширина, глубина, высота].
+  // Порядок в списке = порядок отрисовки (сначала дальние).
+  var M = {
+    krasnaya: [[0,0,0,1,3,4],[1,0,2.3,1,3,1.7],[2,0,0,1,3,4]],
+    loft: [[0,0,0,3,1,3],[0,1,0,1,1,3],[2,1,0,1,1,3],[0,2,0,3,1,3]],
+    sun: [[0,0,0,3,2,1],[0,0,1,2,2,1],[0,0,2,1,2,1]],
+    scand: [[0,0,0,1,2,4],[1.6,0,0,1,2,3],[3.2,0,0,1,2,4]],
+    nevsky: [[0,0,0,1,2,5],[1,0,0,2,2,1.2]],
+    sunvill: [[0,0,0,1,1,2],[1.5,0,0,1,1,2],[0,1.5,0,1,1,2],[1.5,1.5,0,1,1,2]],
+    kquarter: [[1.5,0,0,2,1,3],[0,0,0,1,3,4],[1.5,2,0,2,1,3]],
+    ktowers: [[0,0,0,1,1,6],[2,0,0,1,1,4.5],[0,2,0,3,1,1.5]],
+    kevening: [[0,0,0,3,1,3],[0,1,0,1,2,5]],
+    kcourt: [[0,0,0,4,4,.25],[.5,.5,.25,.25,.25,1.3],[3.25,.5,.25,.25,.25,1.3],[.5,3.25,.25,.25,.25,1.3],[.4,.4,1.55,3.2,3.2,.2],[3.25,3.25,.25,.25,.25,1.3]],
+    kplan: (function () { var r = []; for (var i = 0; i < 3; i++) for (var j = 0; j < 3; j++) r.push([i * 1.4, j * 1.4, 0, 1, 1, (i + j) % 2 ? .5 : .9]); return r; })()
   };
-  document.querySelectorAll('[data-pict]').forEach(function (el) {
-    el.classList.add('pict');
-    el.innerHTML = '<svg viewBox="0 0 40 40" aria-hidden="true">' + (P[el.dataset.pict] || '') + '</svg>';
-  });
-
-  // Заставка один раз за сессию
-  var intro = document.querySelector('.intro');
-  if (intro) {
-    var seen = false;
-    try { seen = sessionStorage.getItem('cubica-intro') === '1'; sessionStorage.setItem('cubica-intro', '1'); } catch (e) {}
-    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (seen || reduce) intro.classList.add('gone');
-    else setTimeout(function () { intro.classList.add('gone'); }, 900);
+  var CO = Math.cos(Math.PI / 6);
+  function P(x, y, z) { return [(x - y) * CO, (x + y) * .5 - z]; }
+  function massSvg(list) {
+    var polys = [], all = [];
+    list.forEach(function (b) {
+      var x = b[0], y = b[1], z = b[2], X = x + b[3], Y = y + b[4], Z = z + b[5];
+      [['l', [[x, Y, z], [X, Y, z], [X, Y, Z], [x, Y, Z]]],
+       ['r', [[X, y, z], [X, Y, z], [X, Y, Z], [X, y, Z]]],
+       ['t', [[x, y, Z], [X, y, Z], [X, Y, Z], [x, Y, Z]]]].forEach(function (f) {
+        var pts = f[1].map(function (p) { var q = P(p[0], p[1], p[2]); all.push(q); return q; });
+        polys.push([f[0], pts]);
+      });
+    });
+    var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    all.forEach(function (q) { minX = Math.min(minX, q[0]); maxX = Math.max(maxX, q[0]); minY = Math.min(minY, q[1]); maxY = Math.max(maxY, q[1]); });
+    var sc = 40 / Math.max(maxX - minX, maxY - minY);
+    var ox = (48 - (maxX - minX) * sc) / 2, oy = (48 - (maxY - minY) * sc) / 2;
+    return '<svg viewBox="0 0 48 48" aria-hidden="true">' + polys.map(function (f) {
+      return '<polygon class="' + f[0] + '" points="' + f[1].map(function (q) {
+        return ((q[0] - minX) * sc + ox).toFixed(1) + ',' + ((q[1] - minY) * sc + oy).toFixed(1);
+      }).join(' ') + '"/>';
+    }).join('') + '</svg>';
   }
+  document.querySelectorAll('[data-pict]').forEach(function (el) {
+    el.classList.add('mass');
+    el.innerHTML = massSvg(M[el.dataset.pict] || []);
+  });
 
   // Меню
   var menu = document.getElementById('menu');
