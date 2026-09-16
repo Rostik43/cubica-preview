@@ -36,34 +36,42 @@
   <div class="menu__foot caps"><span>Архитектурное бюро «Кубика»</span><span>ИНН 1840055720</span></div>
 </div>
 <main class="proj">
-  <aside class="passport">
+  <header class="proj__head">
     <span data-pict="krasnaya"></span>
-    <div><h1>Дом на Красной</h1><div class="caps" style="color:var(--muted)">Ижевск</div></div>
-    <dl class="caps">
+    <div class="proj__title"><h1>Дом на Красной</h1><div class="caps" style="color:var(--muted)">Ижевск</div></div>
+    <dl class="passport caps">
       <div><dt>Заказчик</dt><dd>УралДомСтрой</dd></div>
       <div><dt>Тип</dt><dd>Жилой комплекс</dd></div>
       <div><dt>Этажность</dt><dd>8-9 этажей</dd></div>
       <div><dt>Статус</dt><dd>Строится</dd></div>
       <div><dt>Место</dt><dd>Красная, Пастухова, Карла Маркса</dd></div>
     </dl>
-  </aside>
-  <div class="shots">
-    <img src="assets/img/krasnaya-cover.jpg" alt="Дом на Красной, общий вид">
-    <img src="assets/img/krasnaya-dvor.jpg" alt="Дом на Красной, двор" loading="lazy">
-    <img src="assets/img/krasnaya-fasad.jpg" alt="Дом на Красной, фасад" loading="lazy">
-  </div>
+  </header>
+
+  <section class="hgal" aria-label="Фотографии проекта">
+    <div class="hgal__stage">
+      <div class="hgal__track">
+        <p class="hgal__intro">Жилой комплекс в историческом центре Ижевска, рядом с «Домом чиновника Охизина» 1914 года, памятником архитектуры регионального значения.</p>
+        <figure class="hgal__frame" style="--r:1280/945"><img src="assets/img/krasnaya-cover.jpg" alt="Дом на Красной, общий вид"></figure>
+        <figure class="hgal__frame" style="--r:1280/918"><img src="assets/img/krasnaya-dvor.jpg" alt="Дом на Красной, двор"></figure>
+        <figure class="hgal__frame" style="--r:1280/899"><img src="assets/img/krasnaya-fasad.jpg" alt="Дом на Красной, фасад"></figure>
+        <a class="hgal__next" href="index.html"><span class="caps" style="color:var(--muted)">Следующий проект</span><b>Лофтквартал 212</b><span data-pict="loft"></span></a>
+      </div>
+      <div class="hgal__bar" aria-hidden="true"><i></i></div>
+    </div>
+  </section>
+
   <article class="text">
-    <p>Жилой комплекс в историческом центре Ижевска, рядом с «Домом чиновника Охизина» 1914 года, памятником архитектуры регионального значения.</p>
-    <h2>Среда</h2>
-    <p>Основа проекта: новое прочтение классической архитектуры центра Ижевска. Приёмы неоклассицизма (минимализм, симметрия, спокойная гамма) выполнены в современных материалах. Стены из керамических блоков Porotherm, облицовка из стеклофибробетона добавляет фасаду пластику и ритм.</p>
-    <h2>Памятник</h2>
-    <p>Чтобы сохранить вид на «Дом Охизина», высоту ограничили восемью этажами, а обзор открыли широкой аркой высотой в три этажа. Памятник просматривается в том числе из двора.</p>
-    <h2>Двор</h2>
-    <p>Двор остаётся уединённым, несмотря на открытые виды, а шумоизолирующие материалы держат тишину в квартирах и подъездах.</p>
+    <div><h2>Среда</h2>
+    <p>Основа проекта: новое прочтение классической архитектуры центра Ижевска. Приёмы неоклассицизма (минимализм, симметрия, спокойная гамма) выполнены в современных материалах. Стены из керамических блоков Porotherm, облицовка из стеклофибробетона добавляет фасаду пластику и ритм.</p></div>
+    <div><h2>Памятник</h2>
+    <p>Чтобы сохранить вид на «Дом Охизина», высоту ограничили восемью этажами, а обзор открыли широкой аркой высотой в три этажа. Памятник просматривается в том числе из двора.</p></div>
+    <div><h2>Двор</h2>
+    <p>Двор остаётся уединённым, несмотря на открытые виды, а шумоизолирующие материалы держат тишину в квартирах и подъездах.</p></div>
   </article>
-  <a class="next" href="index.html"><span class="caps" style="color:var(--muted)">Следующий проект</span><b>Лофтквартал 212</b></a>
 </main>
 <script src="assets/site.js"></script>
 <script src="assets/cubes.js"></script>
+<script src="assets/gallery.js"></script>
 </body>
 </html>

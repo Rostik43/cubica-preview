@@ -99,23 +99,50 @@ html.intro .bar, html.intro main { animation: appear .8s .75s both var(--ease); 
 .menu__info a:hover { color: var(--brick); }
 .menu__foot { padding: 24px 0; color: var(--muted); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 
-/* Страница проекта: паспорт / фото / текст */
-.proj { padding: calc(var(--bar) + 16px) 24px 80px; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 24px; align-items: start; }
-.passport { grid-column: 1 / span 2; position: sticky; top: calc(var(--bar) + 16px); display: grid; gap: 22px; }
-.passport h1 { font: 600 20px/1.2 "Exo 2", sans-serif; margin: 10px 0 0; }
-.passport dl { margin: 0; display: grid; gap: 14px; }
+/* Страница проекта: шапка с паспортом, горизонтальная галерея, текст */
+.proj { position: relative; z-index: 1; padding: calc(var(--bar) + 24px) 0 96px; }
+.proj__head { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 24px; align-items: end; padding: 0 24px 28px; }
+.proj__head .mass { grid-column: 1; width: 72px; height: 72px; }
+.proj__title { grid-column: 2 / span 3; }
+.proj__title h1 { font: 600 clamp(26px, 2.6vw, 38px)/1.1 "Exo 2", sans-serif; margin: 0 0 4px; }
+.passport { grid-column: 6 / span 7; margin: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 16px; }
 .passport dt { color: var(--muted); }
-.passport dd { margin: 2px 0 0; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; }
-.passport .back { color: var(--muted); }
-.passport .back:hover { color: var(--brick); }
-.shots { grid-column: 3 / span 6; display: grid; gap: 24px; }
-.shots img { width: 100%; height: auto; }
-.text { grid-column: 9 / span 3; position: sticky; top: calc(var(--bar) + 16px); display: grid; gap: 14px; font-size: 14px; }
+.passport dd { margin: 4px 0 0; font-size: 12px; color: var(--ink); }
+
+/* Галерея: секция в потоке, сцена прилипает, дорожка едет вбок от прокрутки страницы */
+.hgal { position: relative; height: 100svh; }
+.hgal__stage { position: sticky; top: var(--bar); height: calc(100svh - var(--bar)); overflow: hidden; display: flex; flex-direction: column; justify-content: center; }
+.hgal__track { display: flex; align-items: center; gap: 24px; padding: 0 24px; width: max-content; will-change: transform; }
+.hgal__intro { width: min(320px, 70vw); margin: 0 24px 0 0; font-size: clamp(17px, 1.4vw, 21px); line-height: 1.45; flex: none; }
+.hgal__frame { --h: min(64svh, 640px); margin: 0; height: var(--h); aspect-ratio: var(--r); overflow: hidden; flex: none; background: #eef1f3; }
+.hgal__frame img { width: 124%; max-width: none; height: 100%; object-fit: cover; margin-left: -12%; will-change: transform; }
+.hgal__next { flex: none; width: 260px; margin-left: 40px; display: grid; gap: 10px; justify-items: start; }
+.hgal__next b { font-weight: 400; font-size: 20px; }
+.hgal__next:hover b { color: var(--brick); }
+.hgal__next:hover .mass .t { fill: var(--brick); }
+.hgal__bar { margin: 28px 24px 0; height: 1px; background: var(--hair); }
+.hgal__bar i { display: block; height: 100%; background: var(--ink); transform-origin: 0 50%; transform: scaleX(0); }
+
+.text { position: relative; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 24px; padding: 56px 24px 0; font-size: 14px; }
+.text > div:nth-child(1) { grid-column: 2 / span 3; }
+.text > div:nth-child(2) { grid-column: 6 / span 3; }
+.text > div:nth-child(3) { grid-column: 10 / span 3; }
 .text p { margin: 0; }
-.text h2 { font: 700 11px/1.4 "Open Sans", sans-serif; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); margin: 14px 0 -8px; }
-.next { grid-column: 3 / span 6; display: flex; justify-content: space-between; align-items: center; padding-top: 32px; margin-top: 16px; border-top: 1px solid var(--hair); }
-.next b { font-weight: 400; font-size: 13px; }
-.next:hover b { color: var(--brick); }
+.text h2 { font: 700 11px/1.4 "Open Sans", sans-serif; letter-spacing: .09em; text-transform: uppercase; color: var(--muted); margin: 0 0 8px; }
+
+/* Без закрепления: «уменьшить движение» и телефоны. Галерея листается пальцем. */
+.hgal.is-static { height: auto; }
+.hgal.is-static .hgal__stage { position: static; height: auto; overflow: visible; }
+.hgal.is-static .hgal__track { width: auto; overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 12px; transform: none !important; }
+.hgal.is-static .hgal__track > * { scroll-snap-align: start; }
+.hgal.is-static .hgal__track { scroll-padding-left: 16px; }
+@media (max-width: 860px) {
+  .hgal.is-static .hgal__intro { width: 72vw; font-size: 16px; }
+  .hgal.is-static .hgal__frame { --h: auto; width: 84vw; height: auto; }
+  .hgal.is-static .hgal__next { width: 60vw; margin-left: 8px; }
+}
+.hgal.is-static .hgal__frame img { transform: none !important; }
+.hgal.is-static .hgal__bar { display: none; }
 
 /* Страница «Бюро» */
 .about { padding: calc(var(--bar) + 16px) 24px 80px; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 48px 24px; }
@@ -134,12 +161,9 @@ html.intro .bar, html.intro main { animation: appear .8s .75s both var(--ease); 
 @media (max-width: 1100px) {
   .item .item__meta { grid-column: 1 / span 3; justify-self: end; text-align: right; align-items: flex-end; }
   .item .item__img { grid-column: 4 / span 8; }
+  .passport { grid-column: 1 / -1; grid-row: 2; }
   .filters { gap: 20px; }
   .search input { width: 110px; }
-  .passport { grid-column: 1 / span 3; }
-  .shots { grid-column: 4 / span 9; }
-  .text { grid-column: 4 / span 9; position: static; }
-  .next { grid-column: 4 / span 9; }
 }
 @media (max-width: 860px) {
   .bar { grid-template-columns: 1fr auto; height: auto; padding: 14px 16px 10px; row-gap: 10px; }
@@ -147,16 +171,20 @@ html.intro .bar, html.intro main { animation: appear .8s .75s both var(--ease); 
   .filters button { white-space: nowrap; }
   .search input { width: 90px; }
   :root { --bar: 92px; }
-  .list, .proj, .about { padding-left: 16px; padding-right: 16px; }
+  .list, .about { padding-left: 16px; padding-right: 16px; }
   .item { display: block; margin-bottom: 40px; }
   .item__meta { width: 100%; flex-direction: row; align-items: center; justify-content: flex-start; text-align: left; margin-bottom: 10px; }
   .item__meta .caps { margin: 0 0 0 auto; }
   .item .item__meta { justify-self: auto; text-align: left; }
   .empty { padding: 20px 0; }
-  .proj, .about { display: block; }
-  .passport, .text { position: static; margin-bottom: 28px; }
-  .passport dl { grid-template-columns: 1fr 1fr; }
-  .shots { margin-bottom: 28px; }
+  .about { display: block; }
+  .proj__head { grid-template-columns: 72px 1fr; padding: 0 16px 24px; }
+  .proj__title { grid-column: 2; }
+  .passport { grid-column: 1 / -1; grid-template-columns: 1fr 1fr; }
+  .hgal__track { padding: 0 16px; }
+  .hgal__frame { --h: 52vw; }
+  .text { display: block; padding: 32px 16px 0; }
+  .text > div { margin-bottom: 24px; }
   .about > * { margin-bottom: 32px; }
   .about__side { text-align: left; }
   .about__two, .about__facts { grid-template-columns: 1fr; }
