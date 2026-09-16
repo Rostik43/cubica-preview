@@ -1,4 +1,4 @@
-// Горизонтальная галерея проекта с параллаксом внутри рамок (по мотивам Codrops Horizontal Parallax Gallery, DOM-версия).
+// Горизонтальная лента проектов на главной с параллаксом внутри рамок (по мотивам Codrops Horizontal Parallax Gallery, DOM-версия).
 // Источник истины: положение прокрутки страницы. Секция в потоке, сцена прилипает, дорожка сдвигается вбок.
 // «Уменьшить движение» и узкие экраны: без закрепления, галерея листается пальцем.
 (function () {
@@ -13,7 +13,7 @@
   var stage = section.querySelector('.hgal__stage');
   var track = section.querySelector('.hgal__track');
   var bar = section.querySelector('.hgal__bar i');
-  var frames = [].slice.call(section.querySelectorAll('.hgal__frame'));
+  var frames = [].slice.call(section.querySelectorAll('.card__frame'));
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   var distance = 0, stageH = 0, target = 0, current = 0, raf = 0, active = false;
@@ -47,7 +47,7 @@
     var vw = window.innerWidth;
     frames.forEach(function (f) {
       var b = f.getBoundingClientRect();
-      if (b.right < -200 || b.left > vw + 200) return;             // вне экрана не считаем
+      if (!b.width || b.right < -200 || b.left > vw + 200) return;             // вне экрана не считаем
       var offset = (b.left + b.width / 2 - vw / 2) / vw;           // -1…1 относительно центра экрана
       f.firstElementChild.style.transform = 'translate3d(' + (-offset * b.width * CONFIG.parallax).toFixed(2) + 'px,0,0)';
     });
@@ -62,6 +62,7 @@
 
   window.addEventListener('scroll', update, { passive: true });
   window.addEventListener('resize', measure);
+  window.addEventListener('hgal:measure', measure);   // фильтр или поиск изменили набор карточек
   if (reduce.addEventListener) reduce.addEventListener('change', measure);
   // размеры кадров известны из aspect-ratio, но шрифты меняют ширину подписи: перемеряем после загрузки
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);

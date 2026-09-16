@@ -59,7 +59,7 @@
   }
 
   // Фильтры и поиск (только на главной)
-  var items = [].slice.call(document.querySelectorAll('.item[data-tags]'));
+  var items = [].slice.call(document.querySelectorAll('[data-tags]'));
   if (!items.length) return;
   var btns = [].slice.call(document.querySelectorAll('.filters button'));
   var input = document.querySelector('.search input');
@@ -76,6 +76,7 @@
       if (!it.hidden) shown++;
     });
     empty.hidden = shown > 0;
+    window.dispatchEvent(new Event('hgal:measure'));
   }
   btns.forEach(function (b) {
     b.addEventListener('click', function () {
