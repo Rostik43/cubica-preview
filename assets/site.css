@@ -23,15 +23,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 :focus-visible { outline: 2px solid var(--brick); outline-offset: 3px; }
 .caps { font-size: 11px; line-height: 1.4; letter-spacing: .09em; text-transform: uppercase; }
 
-/* Фон «белый макет» (assets/model-bg.js, исходник _src/model-bg.js) */
-.model-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .2; }   /* страницы с текстом: едва заметно */
-body:has(.home) > .model-bg { opacity: .42; }                                                 /* главная: макет виден между фото */
-.card__meta { text-shadow: 0 0 8px #fff, 0 0 2px #fff; }
 .home, .proj, .about { position: relative; z-index: 1; }
-
-/* Первый визит: кубики проявляются от центра, затем появляется содержимое */
-html.intro .bar, html.intro main { animation: appear .8s .75s both var(--ease); }
-@keyframes appear { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
 /* Значок проекта: объёмная схема из блоков */
 .mass { display: block; width: 48px; height: 48px; flex: none; }
@@ -60,41 +52,44 @@ html.intro .bar, html.intro main { animation: appear .8s .75s both var(--ease); 
 .search input { width: 150px; border: 0; padding: 6px 0; font: inherit; color: var(--ink); background: none; outline: none; }
 .search input::placeholder { color: var(--muted); }
 
-/* Главная: закреплённая лента проектов, вертикальная прокрутка двигает её вбок (assets/gallery.js) */
-.home { padding-top: var(--bar); }
-.hgal { position: relative; height: calc(100svh - var(--bar)); }
-.hgal__stage { position: sticky; top: var(--bar); height: calc(100svh - var(--bar)); overflow: hidden; display: flex; flex-direction: column; justify-content: center; }
-.hgal__track { display: flex; align-items: flex-start; gap: 48px; padding: 0 max(24px, 8vw) 0 max(24px, 16vw); width: max-content; will-change: transform; }
-.card { flex: none; display: grid; gap: 14px; }
-.card:nth-child(even) { margin-top: 7svh; }
-.card[hidden] { display: none; }
-.card__frame { --h: min(58svh, 580px); margin: 0; height: var(--h); aspect-ratio: var(--r); overflow: hidden; background: #eef1f3; }
-.card:nth-child(even) .card__frame { --h: min(48svh, 480px); }
-.card__frame img { width: 124%; max-width: none; height: 100%; object-fit: cover; margin-left: -12%; will-change: transform; transition: scale 1s var(--ease); }
-.card:hover .card__frame img { scale: 1.03; }
-.card__meta { display: flex; align-items: center; gap: 12px; }
-.card__meta .mass { width: 40px; height: 40px; }
-.card__meta b { display: block; font-weight: 400; font-size: 14px; line-height: 1.3; }
-.card__meta .caps { color: var(--muted); }
-.card:hover .card__meta b { color: var(--brick); }
-.card:hover .mass .t { fill: var(--brick); }
-.hgal .empty { width: 60vw; color: var(--muted); padding-top: 20svh; }
-.hgal__bar { margin: 4svh max(24px, 16vw) 0; height: 1px; background: var(--hair); }
-.hgal__bar i { display: block; height: 100%; background: var(--ink); transform-origin: 0 50%; transform: scaleX(0); }
+/* Главная: список проектов сверху вниз. Клик раскрывает проект: обложка становится лентой всех фото. */
+.home { padding: calc(var(--bar) + 24px) 24px 120px; }
+.row { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 0 24px; margin-bottom: 40px; scroll-margin-top: calc(var(--bar) + 16px); }
+.row[hidden] { display: none; }
+.row__meta { grid-column: 1 / span 4; justify-self: end; text-align: right; display: grid; justify-items: end; align-content: start; }
+.row__toggle { display: grid; justify-items: end; gap: 10px; text-align: right; cursor: pointer; }
+.row__toggle b { font-weight: 400; font-size: 13px; line-height: 1.3; }
+.row__toggle .caps { color: var(--muted); margin-top: -8px; }
+.row__toggle:hover b, .row.open .row__toggle b { color: var(--brick); }
+.row__toggle:hover .mass .t, .row.open .mass .t { fill: var(--brick); }
 
-/* Без закрепления: «уменьшить движение» и телефоны. Лента листается пальцем. */
-.hgal.is-static { height: auto; }
-.hgal.is-static .hgal__stage { position: static; height: auto; overflow: visible; padding: 24px 0; }
-.hgal.is-static .hgal__track { width: auto; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-left: 16px; padding: 0 16px 12px; gap: 16px; transform: none !important; }
-.hgal.is-static .card { scroll-snap-align: start; margin-top: 0; }
-.hgal.is-static .card__frame { --h: auto; width: 80vw; height: auto; }
-.hgal.is-static .card__frame img { transform: none !important; }
-.hgal.is-static .hgal__bar { display: none; }
-@media (max-width: 860px) {
-  .hgal.is-static .hgal__track { flex-direction: column; overflow: visible; scroll-snap-type: none; gap: 32px; }
-  .hgal.is-static .card__frame { width: 100%; }
-  .hgal.is-static .card { width: 100%; }
-}
+/* Детали раскрываются плавно: grid-rows 0fr -> 1fr */
+.row__more { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .6s var(--ease); }
+.row.open .row__more { grid-template-rows: 1fr; }
+.row__inner { overflow: hidden; display: grid; justify-items: end; gap: 18px; min-height: 0; }
+.row__inner dl { margin: 22px 0 0; display: grid; gap: 12px; }
+.row__inner dt { color: var(--muted); }
+.row__inner dd { margin: 2px 0 0; color: var(--ink); }
+.row__nav { display: flex; align-items: center; gap: 14px; }
+.row__nav button:hover, .row__close:hover, .row__link:hover { color: var(--brick); }
+.row__nav button:disabled { opacity: .35; cursor: default; }
+.row__count { color: var(--muted); min-width: 44px; text-align: center; }
+.row__link { border-bottom: 1px solid currentColor; }
+.row__close { color: var(--muted); }
+
+/* Медиа-колонка тянется до правого края экрана */
+.row__media { grid-column: 5 / -1; margin-right: -24px; container-type: inline-size; min-width: 0; }
+.strip { --h: calc(var(--cw) * var(--k0)); display: flex; gap: 16px; height: var(--h); width: var(--cw); overflow: hidden; cursor: pointer; transition: width .7s var(--ease), height .7s var(--ease); scrollbar-width: none; }
+.strip::-webkit-scrollbar { display: none; }
+.shot { margin: 0; flex: none; height: 100%; aspect-ratio: calc(1 / var(--k)); background: #eef1f3; overflow: hidden; scroll-snap-align: start; }
+.shot img { width: 100%; height: 100%; object-fit: cover; transition: scale 1s var(--ease); }
+.row:not(.open) .strip:hover .shot:first-child img { scale: 1.025; }
+.shot + .shot { opacity: 0; transition: opacity .5s var(--ease) .15s; }
+.row.open .strip { width: 100%; overflow-x: auto; scroll-snap-type: x mandatory; cursor: grab; padding-right: 24px; }
+.row.open .strip.drag { scroll-snap-type: none; user-select: none; }
+.row.open .shot + .shot { opacity: 1; }
+
+.empty { color: var(--muted); padding: 40px 0; text-align: center; }
 
 /* Меню */
 .menu { position: fixed; inset: 0; z-index: 60; background: var(--white); padding: 0 24px; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: var(--bar) 1fr auto; transform: translateY(-100%); transition: transform .6s var(--ease); visibility: hidden; }
@@ -150,6 +145,16 @@ html.intro .bar, html.intro main { animation: appear .8s .75s both var(--ease); 
   .next { grid-column: 4 / span 9; }
 }
 @media (max-width: 860px) {
+  .home { padding: calc(var(--bar) + 16px) 16px 80px; }
+  .row { display: block; margin-bottom: 36px; }
+  .row__meta, .row__toggle, .row__inner { justify-self: stretch; justify-items: start; text-align: left; }
+  .row__toggle { grid-template-columns: auto 1fr auto; align-items: center; width: 100%; }
+  .row__toggle .caps { margin: 0; }
+  .row__inner { grid-template-columns: 1fr; padding-bottom: 12px; }
+  .row__inner dl { grid-template-columns: 1fr 1fr; width: 100%; margin-top: 16px; }
+  .row__media { margin: 10px -16px 0 0; }
+  .strip, .row.open .strip { --cw: 100cqi; }
+  .row.open .strip { --cw: 88cqi; }
   .bar { grid-template-columns: 1fr auto; height: auto; padding: 14px 16px 10px; row-gap: 10px; }
   .filters { grid-column: 1 / -1; grid-row: 2; overflow-x: auto; gap: 22px; padding-left: 12px; scrollbar-width: none; }
   .filters button { white-space: nowrap; }
