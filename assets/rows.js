@@ -16,6 +16,25 @@
     return best;
   }
 
+  // Эффект при листании: кадр у левого края ленты полный, дальние чуть меньше и бледнее,
+  // фото внутри рамки смещается медленнее рамки (глубина).
+  var FX = { anchor: 0, scale: 0.1, fade: 0.26, shift: 0.1 };   // сила эффекта: масштаб, прозрачность, сдвиг фото внутри рамки
+  function effect(row) {
+    var strip = row.querySelector('.strip');
+    if (!row.classList.contains('open')) {
+      frames(row).forEach(function (f) { f.style.removeProperty('--s'); f.style.removeProperty('--o'); f.firstElementChild.style.removeProperty('--px'); });
+      return;
+    }
+    var w = strip.clientWidth, anchor = w * FX.anchor;
+    frames(row).forEach(function (f) {
+      var b = f.getBoundingClientRect(), sb = strip.getBoundingClientRect();
+      var d = Math.min(1.6, Math.abs(b.left - sb.left - anchor) / w);
+      f.style.setProperty('--s', (1 - FX.scale * d).toFixed(3));
+      f.style.setProperty('--o', (1 - FX.fade * d).toFixed(3));
+      f.firstElementChild.style.setProperty('--px', (-(b.left - sb.left - anchor) * FX.shift).toFixed(1) + 'px');
+    });
+  }
+
   function sync(row) {
     var count = row.querySelector('.row__count');
     if (!count) return;
@@ -33,14 +52,15 @@
   function glide(row, to) {
     var strip = row.querySelector('.strip');
     cancelAnimationFrame(row._raf);
-    if (reduce) { strip.scrollLeft = to; row._target = null; sync(row); return; }
+    if (reduce) { strip.scrollLeft = to; row._target = null; sync(row); effect(row); return; }
     var from = strip.scrollLeft, t0 = performance.now(), dur = 650;
     strip.classList.add('drag');                       // без привязки к кадрам на время анимации
     (function step(now) {
       var p = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - p, 4);
       strip.scrollLeft = from + (to - from) * e;
+      effect(row);
       if (p < 1) row._raf = requestAnimationFrame(step);
-      else { strip.classList.remove('drag'); row._target = null; sync(row); }
+      else { strip.classList.remove('drag'); row._target = null; sync(row); effect(row); }
     })(t0);
   }
   function go(row, step) {
@@ -63,6 +83,7 @@
       openRow = row;
       strip.scrollLeft = 0;
       sync(row);
+      requestAnimationFrame(function () { effect(row); });
       // дождаться раскрытия и показать проект целиком
       setTimeout(function () {
         var top = row.getBoundingClientRect().top;
@@ -71,6 +92,7 @@
     } else {
       if (openRow === row) openRow = null;
       strip.scrollLeft = 0;
+      effect(row);
     }
   }
 
@@ -83,7 +105,7 @@
     row.querySelectorAll('[data-step]').forEach(function (b) {
       b.addEventListener('click', function () { go(row, +b.dataset.step); });
     });
-    strip.addEventListener('scroll', function () { sync(row); }, { passive: true });
+    strip.addEventListener('scroll', function () { sync(row); effect(row); }, { passive: true });
 
     // Перетаскивание ленты мышью; клик без перетаскивания: открыть проект или следующее фото
     var down = false, moved = false, startX = 0, startLeft = 0;
@@ -96,7 +118,7 @@
       if (!down || !row.classList.contains('open')) return;
       var dx = e.clientX - startX;
       if (Math.abs(dx) > 5) { moved = true; strip.classList.add('drag'); }
-      if (moved) strip.scrollLeft = startLeft - dx;
+      if (moved) { strip.scrollLeft = startLeft - dx; effect(row); }
     });
     window.addEventListener('pointerup', function () {
       if (!down) return;

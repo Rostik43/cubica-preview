@@ -69,17 +69,18 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .row__link { border-bottom: 1px solid currentColor; }
 .row__close { color: var(--muted); }
 
-/* Медиа-колонка тянется до правого края экрана */
+/* Медиа-колонка тянется до правого края экрана. Все кадры одного размера. */
 .row__media { grid-column: 5 / -1; margin-right: -24px; container-type: inline-size; min-width: 0; }
-.strip { --h: calc(var(--cw) * var(--k0)); display: flex; gap: 16px; height: var(--h); width: var(--cw); overflow: hidden; cursor: pointer; transition: width .7s var(--ease), height .7s var(--ease); scrollbar-width: none; }
+.strip { --cw: 58cqi; --h: calc(var(--cw) * 0.72); display: flex; gap: 16px; align-items: center; height: var(--h); width: var(--cw); overflow: hidden; cursor: pointer; transition: width .7s var(--ease); scrollbar-width: none; }
 .strip::-webkit-scrollbar { display: none; }
-.shot { margin: 0; flex: none; height: 100%; aspect-ratio: calc(1 / var(--k)); background: #eef1f3; overflow: hidden; scroll-snap-align: start; }
-.shot img { width: 100%; height: 100%; object-fit: cover; transition: scale 1s var(--ease); }
-.row:not(.open) .strip:hover .shot:first-child img { scale: 1.025; }
+.shot { margin: 0; flex: none; width: var(--cw); height: var(--h); overflow: hidden; background: #eef1f3; scroll-snap-align: start;
+  transform: scale(var(--s, 1)); opacity: var(--o, 1); transition: opacity .3s linear; will-change: transform; }
+.shot img { width: 118%; max-width: none; height: 100%; object-fit: cover; margin-left: -9%; transform: translate3d(var(--px, 0), 0, 0); }
+.row:not(.open) .strip:hover .shot img { scale: 1.03; transition: scale 1s var(--ease); }
 .shot + .shot { opacity: 0; transition: opacity .5s var(--ease) .15s; }
 .row.open .strip { width: 100%; overflow-x: auto; scroll-snap-type: x mandatory; cursor: grab; padding-right: 24px; }
 .row.open .strip.drag { scroll-snap-type: none; user-select: none; }
-.row.open .shot + .shot { opacity: 1; }
+.row.open .shot + .shot { opacity: var(--o, 1); }
 
 .empty { color: var(--muted); padding: 40px 0; text-align: center; }
 
@@ -146,7 +147,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .row__inner dl { grid-template-columns: 1fr 1fr; width: 100%; margin-top: 16px; }
   .row__media { margin: 10px -16px 0 0; }
   .strip, .row.open .strip { --cw: 100cqi; }
-  .row.open .strip { --cw: 88cqi; }
+  .row.open .strip { --cw: 86cqi; }
   .bar { grid-template-columns: 1fr auto; height: auto; padding: 14px 16px 10px; row-gap: 10px; }
   .filters { grid-column: 1 / -1; grid-row: 2; overflow-x: auto; gap: 22px; padding-left: 12px; scrollbar-width: none; }
   .filters button { white-space: nowrap; }
