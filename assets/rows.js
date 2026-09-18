@@ -6,6 +6,7 @@
   if (!rows.length) return;
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var openRow = null;
+  if (!reduce && 'IntersectionObserver' in window) document.documentElement.classList.add('js-rows');
 
   function frames(row) { return [].slice.call(row.querySelectorAll('.shot')); }
 
@@ -96,8 +97,41 @@
     }
   }
 
+  // Появление проектов при прокрутке страницы
+  if ('IntersectionObserver' in window && !reduce) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('seen'); io.unobserve(e.target); } });
+    }, { rootMargin: '0px 0px -10% 0px' });
+    rows.forEach(function (row) { io.observe(row); });
+  } else rows.forEach(function (row) { row.classList.add('seen'); });
+
+  // Вертикальная глубина: пока страница прокручивается, фото смещается внутри рамки
+  var PY = 0.05;           // доля высоты кадра
+  var vraf = 0;
+  function vertical() {
+    vraf = 0;
+    var vh = window.innerHeight;
+    rows.forEach(function (row) {
+      if (row.hidden) return;
+      var shot = row.querySelector('.shot');
+      var b = shot.getBoundingClientRect();
+      if (b.bottom < -100 || b.top > vh + 100) return;
+      var p = ((b.top + b.height / 2) - vh / 2) / vh;      // -1 сверху, +1 снизу
+      var shift = Math.max(-1, Math.min(1, p)) * b.height * PY;
+      row.querySelectorAll('.shot img').forEach(function (img) { img.style.setProperty('--py', shift.toFixed(1) + 'px'); });
+    });
+  }
+  if (!reduce) {
+    window.addEventListener('scroll', function () { if (!vraf) vraf = requestAnimationFrame(vertical); }, { passive: true });
+    window.addEventListener('resize', function () { if (!vraf) vraf = requestAnimationFrame(vertical); });
+    vertical();
+  }
+
   rows.forEach(function (row) {
     var strip = row.querySelector('.strip');
+    // Браузер по умолчанию «перетаскивает» картинку: при листании ленты это мешает
+    row.querySelectorAll('img').forEach(function (img) { img.draggable = false; });
+    strip.addEventListener('dragstart', function (e) { e.preventDefault(); });
     var btn = row.querySelector('.row__toggle');
 
     btn.addEventListener('click', function () { setOpen(row, !row.classList.contains('open')); });

@@ -47,6 +47,9 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 /* Главная: список проектов сверху вниз. Клик раскрывает проект: обложка становится лентой всех фото. */
 .home { padding: calc(var(--bar) + 24px) 24px 120px; }
 .row { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 0 24px; margin-bottom: 40px; scroll-margin-top: calc(var(--bar) + 16px); }
+/* Появление при прокрутке включается только если работает скрипт */
+.js-rows .row { opacity: 0; transform: translateY(18px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
+.js-rows .row.seen { opacity: 1; transform: none; }
 .row[hidden] { display: none; }
 .row__meta { grid-column: 1 / span 4; justify-self: end; text-align: right; display: grid; justify-items: end; align-content: start; }
 .row__toggle { display: grid; justify-items: end; gap: 10px; text-align: right; cursor: pointer; }
@@ -75,7 +78,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .strip::-webkit-scrollbar { display: none; }
 .shot { margin: 0; flex: none; width: var(--cw); height: var(--h); overflow: hidden; background: #eef1f3; scroll-snap-align: start;
   transform: scale(var(--s, 1)); opacity: var(--o, 1); transition: opacity .3s linear; will-change: transform; }
-.shot img { width: 118%; max-width: none; height: 100%; object-fit: cover; margin-left: -9%; transform: translate3d(var(--px, 0), 0, 0); }
+.shot img { width: 112%; max-width: none; height: 114%; object-fit: cover; margin: -7% 0 0 -6%;
+  transform: translate3d(var(--px, 0), var(--py, 0), 0); -webkit-user-drag: none; user-select: none; }
 .row:not(.open) .strip:hover .shot img { scale: 1.03; transition: scale 1s var(--ease); }
 .shot + .shot { opacity: 0; transition: opacity .5s var(--ease) .15s; }
 .row.open .strip { width: 100%; overflow-x: auto; scroll-snap-type: x mandatory; cursor: grab; padding-right: 24px; }
@@ -166,5 +170,6 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .menu__nav { align-self: start; padding-top: 32px; }
 }
 @media (prefers-reduced-motion: reduce) {
+  .js-rows .row { opacity: 1; transform: none; }
   *, *::before, *::after { transition: none !important; animation: none !important; }
 }
