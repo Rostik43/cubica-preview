@@ -19,7 +19,7 @@
 
   // Эффект при листании: кадр у левого края ленты полный, дальние чуть меньше и бледнее,
   // фото внутри рамки смещается медленнее рамки (глубина).
-  var FX = { anchor: 0, scale: 0.1, fade: 0.26, shift: 0.1 };   // сила эффекта: масштаб, прозрачность, сдвиг фото внутри рамки
+  var FX = { anchor: 0, scale: 0.2, fade: 0.5, shift: 0.18 };   // сила эффекта: масштаб, прозрачность, сдвиг фото внутри рамки
   function effect(row) {
     var strip = row.querySelector('.strip');
     if (!row.classList.contains('open')) {
@@ -105,19 +105,23 @@
     rows.forEach(function (row) { io.observe(row); });
   } else rows.forEach(function (row) { row.classList.add('seen'); });
 
-  // Вертикальная глубина: пока страница прокручивается, фото смещается внутри рамки
-  var PY = 0.05;           // доля высоты кадра
+  // Прокрутка страницы: проект в середине экрана показан полностью,
+  // ушедшие вверх и ещё не дошедшие снизу уменьшаются и бледнеют. Фото внутри рамки сдвигается по вертикали.
+  var VY = { scale: 0.12, fade: 0.45, shift: 0.08 };
   var vraf = 0;
   function vertical() {
     vraf = 0;
     var vh = window.innerHeight;
     rows.forEach(function (row) {
       if (row.hidden) return;
-      var shot = row.querySelector('.shot');
-      var b = shot.getBoundingClientRect();
-      if (b.bottom < -100 || b.top > vh + 100) return;
-      var p = ((b.top + b.height / 2) - vh / 2) / vh;      // -1 сверху, +1 снизу
-      var shift = Math.max(-1, Math.min(1, p)) * b.height * PY;
+      var media = row.querySelector('.row__media');
+      var b = media.getBoundingClientRect();
+      if (b.bottom < -200 || b.top > vh + 200) return;
+      var p = Math.max(-1, Math.min(1, ((b.top + b.height / 2) - vh / 2) / vh));   // -1 вверху, 0 в центре, +1 внизу
+      var d = Math.abs(p);
+      media.style.setProperty('--rs', (1 - VY.scale * d).toFixed(3));
+      media.style.setProperty('--ro', (1 - VY.fade * d).toFixed(3));
+      var shift = p * b.height * VY.shift;
       row.querySelectorAll('.shot img').forEach(function (img) { img.style.setProperty('--py', shift.toFixed(1) + 'px'); });
     });
   }

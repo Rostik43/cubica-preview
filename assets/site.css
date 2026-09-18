@@ -73,7 +73,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .row__close { color: var(--muted); }
 
 /* Медиа-колонка тянется до правого края экрана. Все кадры одного размера. */
-.row__media { grid-column: 5 / -1; margin-right: -24px; container-type: inline-size; min-width: 0; }
+.row__media { grid-column: 5 / -1; margin-right: -24px; container-type: inline-size; min-width: 0;
+  transform: scale(var(--rs, 1)); transform-origin: left center; opacity: var(--ro, 1); will-change: transform; }
 .strip { --cw: 58cqi; --h: calc(var(--cw) * 0.72); display: flex; gap: 16px; align-items: center; height: var(--h); width: var(--cw); overflow: hidden; cursor: pointer; transition: width .7s var(--ease); scrollbar-width: none; }
 .strip::-webkit-scrollbar { display: none; }
 .shot { margin: 0; flex: none; width: var(--cw); height: var(--h); overflow: hidden; background: #eef1f3; scroll-snap-align: start;
