@@ -1,41 +1,44 @@
-// Прелоадер: фирменный экран с логотипом и полосой прогресса.
-// Прогресс настоящий: считаются обложки и шрифты. Жёсткий предел — сайт открывается даже если что-то не догрузилось.
-// Показывается один раз за визит; при переходе по страницам сайта больше не появляется.
+// Прелоадер: фирменный синий экран, кубы вычерчиваются по изометрической сетке (как в гайдбуке),
+// затем проявляется логотип и экран уходит вверх.
+// Уходит, когда готовы шрифты и обложки первого экрана, но не раньше, чем дочертятся кубы,
+// и не позже жёсткого предела: сайт открывается в любом случае.
 (function () {
-  var MIN = 500, MAX = 1800;            // мс: минимальный показ и предел ожидания
+  var STEP = 170, MAX = 2400;           // мс: пауза между кубами и предел ожидания
   var pre = document.getElementById('pre');
   if (!pre) return;
-  var bar = pre.querySelector('.pre__bar i');
+  var cubes = [].slice.call(pre.querySelectorAll('.cube'));
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  function done(instant) {
+  function hide(instant) {
     if (pre._done) return;
     pre._done = true;
     if (instant) { pre.remove(); return; }
-    if (bar) bar.style.transform = 'scaleX(1)';
+    cubes.forEach(function (c) { c.classList.add('on'); });
+    pre.classList.add('logo');
     setTimeout(function () {
       pre.classList.add('pre--out');
       setTimeout(function () { pre.remove(); }, 700);
-    }, 180);
+    }, 420);
   }
 
   var seen = false;
   try { seen = sessionStorage.getItem('cubica-pre') === '1'; sessionStorage.setItem('cubica-pre', '1'); } catch (e) {}
-  if (seen || reduce) { done(true); return; }
+  if (seen || reduce) { hide(true); return; }
 
-  // Считаем то, что видно сразу: обложки проектов и шрифты
+  // Кубы вычерчиваются один за другим
+  var drawn = false;
+  cubes.forEach(function (c, i) {
+    setTimeout(function () {
+      c.classList.add('on');
+      if (i === cubes.length - 1) { drawn = true; pre.classList.add('logo'); maybe(); }
+    }, 120 + i * STEP);
+  });
+
+  // Готовность: шрифты и обложки, которые видны сразу
   var imgs = [].slice.call(document.querySelectorAll('img:not([loading="lazy"])'));
-  var total = imgs.length + 1, ready = 0, t0 = performance.now();
-
-  function tick() {
-    ready++;
-    if (bar) bar.style.transform = 'scaleX(' + Math.min(1, ready / total).toFixed(3) + ')';
-    if (ready >= total) finish();
-  }
-  function finish() {
-    var wait = Math.max(0, MIN - (performance.now() - t0));
-    setTimeout(function () { done(false); }, wait);
-  }
+  var total = imgs.length + 1, ready = 0, loaded = false;
+  function tick() { if (++ready >= total) { loaded = true; maybe(); } }
+  function maybe() { if (drawn && loaded) hide(false); }
 
   imgs.forEach(function (img) {
     if (img.complete) tick();
@@ -43,9 +46,9 @@
   });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(tick); else tick();
 
-  setTimeout(function () { finish(); }, MAX);   // предел: дальше не ждём
+  setTimeout(function () { hide(false); }, MAX);
 
-  // Мягкое проявление фото: пока файл не пришёл, на месте кадра светлый прямоугольник
+  // Мягкое проявление фото: пока файл не пришёл, на месте кадра светлая заливка
   function watch(img) {
     if (img.complete && img.naturalWidth) { img.classList.add('ready'); return; }
     img.addEventListener('load', function () { img.classList.add('ready'); }, { once: true });
