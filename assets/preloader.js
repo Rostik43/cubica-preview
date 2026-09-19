@@ -3,7 +3,7 @@
 // Уходит, когда готовы шрифты и обложки первого экрана, но не раньше, чем дочертятся кубы,
 // и не позже жёсткого предела: сайт открывается в любом случае.
 (function () {
-  var STEP = 170, MAX = 2400;           // мс: пауза между кубами и предел ожидания
+  var STEP = 320, MAX = 3600;           // мс: пауза между кубами и предел ожидания
   var pre = document.getElementById('pre');
   if (!pre) return;
   var cubes = [].slice.call(pre.querySelectorAll('.cube'));
@@ -17,8 +17,8 @@
     pre.classList.add('logo');
     setTimeout(function () {
       pre.classList.add('pre--out');
-      setTimeout(function () { pre.remove(); }, 700);
-    }, 420);
+      setTimeout(function () { pre.remove(); }, 900);
+    }, 650);   // пауза с готовой композицией перед уходом занавеса
   }
 
   var seen = false;
@@ -31,7 +31,7 @@
     setTimeout(function () {
       c.classList.add('on');
       if (i === cubes.length - 1) { drawn = true; pre.classList.add('logo'); maybe(); }
-    }, 120 + i * STEP);
+    }, 200 + i * STEP);
   });
 
   // Готовность: шрифты и обложки, которые видны сразу
