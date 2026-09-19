@@ -23,6 +23,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 :focus-visible { outline: 2px solid var(--brick); outline-offset: 3px; }
 .caps { font-size: 11px; line-height: 1.4; letter-spacing: .09em; text-transform: uppercase; }
 
+/* Живые кубы в левом поле (assets/cubes-live.js) */
+.live-cubes { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
 .home, .proj, .about { position: relative; z-index: 1; }
 
 
