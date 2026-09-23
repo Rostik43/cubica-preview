@@ -4,6 +4,16 @@
 // и не позже жёсткого предела: сайт открывается в любом случае.
 (function () {
   var STEP = 320, MAX = 3600;           // мс: пауза между кубами и предел ожидания
+  // Мягкое проявление фото: пока файл не пришёл, на месте кадра светлая заливка.
+  // Включается всегда, даже если прелоадер пропущен (повторный заход), иначе фото останутся невидимыми.
+  function watch(img) {
+    if (img.complete && img.naturalWidth) { img.classList.add('ready'); return; }
+    img.addEventListener('load', function () { img.classList.add('ready'); }, { once: true });
+    img.addEventListener('error', function () { img.classList.add('ready'); }, { once: true });
+  }
+  [].forEach.call(document.images, watch);
+  document.documentElement.classList.add('js-img');   // прятать фото до загрузки, только когда скрипт точно работает
+
   var pre = document.getElementById('pre');
   if (!pre) return;
   var cubes = [].slice.call(pre.querySelectorAll('.cube'));
@@ -48,11 +58,4 @@
 
   setTimeout(function () { hide(false); }, MAX);
 
-  // Мягкое проявление фото: пока файл не пришёл, на месте кадра светлая заливка
-  function watch(img) {
-    if (img.complete && img.naturalWidth) { img.classList.add('ready'); return; }
-    img.addEventListener('load', function () { img.classList.add('ready'); }, { once: true });
-    img.addEventListener('error', function () { img.classList.add('ready'); }, { once: true });
-  }
-  [].forEach.call(document.images, watch);
 })();

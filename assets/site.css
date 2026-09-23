@@ -57,8 +57,8 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 @media (prefers-reduced-motion: reduce) { .pre { display: none; } }
 
 /* Пока фото не загрузилось, на его месте светлая заливка кадра */
-.shot img, .shots img, .about img { opacity: 0; transition: opacity .6s var(--ease); }
-.shot img.ready, .shots img.ready, .about img.ready { opacity: 1; }
+.js-img .shot img, .js-img .shots img, .js-img .about img { opacity: 0; transition: opacity .6s var(--ease); }
+.js-img .shot img.ready, .js-img .shots img.ready, .js-img .about img.ready { opacity: 1; }
 
 /* Верхняя панель */
 .bar { position: fixed; inset: 0 0 auto; height: var(--bar); z-index: 30; background: rgba(255,255,255,.96); display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 0 24px; }
