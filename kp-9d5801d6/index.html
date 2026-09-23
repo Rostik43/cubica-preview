@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Коммерческое предложение: сайт бюро «Кубика»</title>
+<style>
+@font-face { font-family: "Exo 2"; src: url("../assets/fonts/Exo2-SemiBold.ttf") format("truetype"); font-weight: 600; font-display: swap; }
+@font-face { font-family: "Open Sans"; src: url("../assets/fonts/OpenSans-Regular.ttf") format("truetype"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Open Sans"; src: url("../assets/fonts/OpenSans-Bold.ttf") format("truetype"); font-weight: 700; font-display: swap; }
+@font-face { font-family: "Open Sans"; src: url("../assets/fonts/OpenSans-LightItalic.ttf") format("truetype"); font-weight: 300; font-style: italic; font-display: swap; }
+
+:root { --ink: #253746; --slate: #768692; --muted: #5d6c76; --brick: #af272f; --hair: #e3e7ea; --pale: #f4f6f7; --ease: cubic-bezier(.16, 1, .3, 1); }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: #fff; color: var(--ink); font: 400 15px/1.55 "Open Sans", Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+a { color: inherit; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--brick); outline-offset: 3px; }
+.caps { font-size: 11px; line-height: 1.4; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.wrap { max-width: 1240px; margin: 0 auto; padding: 0 24px; }
+
+/* шапка */
+.top { border-bottom: 1px solid var(--hair); }
+.top .wrap { height: 64px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.top img { height: 14px; }
+
+/* обложка */
+.hero { padding: 56px 0 40px; display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); gap: 48px; align-items: end; }
+h1 { font: 600 clamp(32px, 4.4vw, 56px)/1.05 "Exo 2", sans-serif; margin: 12px 0 18px; letter-spacing: -.01em; }
+.hero p { margin: 0; font-size: 17px; max-width: 58ch; }
+.hero .preview { justify-self: end; text-align: right; }
+.hero .preview a { font-weight: 700; text-decoration: none; border-bottom: 1px solid currentColor; }
+.hero .preview a:hover { color: var(--brick); }
+
+/* раскладка: слева пакеты, справа итог */
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 40px; align-items: start; padding-bottom: 96px; }
+h2 { font: 700 11px/1.4 "Open Sans", sans-serif; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 0 0 14px; }
+
+/* базовый пакет */
+.base { background: var(--ink); color: #fff; padding: 28px; margin-bottom: 44px; }
+.base__head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
+.base__head b { font-size: 22px; }
+.base__head .price { font-size: 26px; font-weight: 700; letter-spacing: -.02em; white-space: nowrap; }
+.base .caps { color: #aebac3; }
+.base__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 28px; }
+.base__grid h3 { font-size: 14px; margin: 0 0 6px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,.2); }
+.base__grid ul { margin: 0; padding-left: 16px; color: #d6dde3; font-size: 13.5px; }
+.base__grid li { margin-bottom: 3px; }
+.base__grid li::marker { color: var(--brick); }
+.base__note { margin: 20px 0 0; font: 300 italic 13px/1.4 "Open Sans"; color: #c3ccd3; }
+
+/* доп. услуги */
+.extras { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.opt { position: relative; display: grid; grid-template-rows: auto 1fr auto; gap: 8px; padding: 20px; border: 1px solid var(--hair); background: #fff; cursor: pointer; text-align: left; transition: border-color .25s var(--ease), background .25s var(--ease), transform .15s var(--ease); }
+.opt:hover { border-color: var(--slate); }
+.opt:active { transform: scale(.99); }
+.opt[aria-pressed="true"] { border-color: var(--ink); background: var(--pale); }
+.opt__title { font-weight: 700; font-size: 15.5px; padding-right: 32px; }
+.opt__why { color: var(--muted); font-size: 13.5px; }
+.opt__price { font-weight: 700; font-size: 15px; }
+.opt__price small { font-weight: 400; color: var(--muted); }
+/* флажок: изометрический кубик, закрашивается при выборе */
+.opt__box { position: absolute; right: 18px; top: 18px; width: 22px; height: 22px; }
+.opt__box polygon { fill: #fff; stroke: var(--slate); stroke-width: 1.2; transition: fill .25s var(--ease), stroke .25s var(--ease); }
+.opt[aria-pressed="true"] .opt__box polygon { stroke: var(--ink); }
+.opt[aria-pressed="true"] .opt__box .t { fill: var(--brick); stroke: var(--brick); }
+.opt[aria-pressed="true"] .opt__box .l { fill: #d7dde2; }
+.opt[aria-pressed="true"] .opt__box .r { fill: var(--slate); }
+
+/* итог */
+.sum { position: sticky; top: 24px; border: 1.5px solid var(--ink); padding: 24px; }
+.sum__total { font-size: 38px; font-weight: 700; letter-spacing: -.02em; line-height: 1; margin: 6px 0 4px; }
+.sum__monthly { color: var(--muted); font-size: 14px; min-height: 21px; }
+.sum table { width: 100%; border-collapse: collapse; margin: 18px 0; font-size: 13.5px; }
+.sum td { padding: 7px 0; border-bottom: 1px solid var(--hair); vertical-align: top; }
+.sum td:last-child { text-align: right; white-space: nowrap; font-weight: 700; padding-left: 12px; }
+.sum .pay td { color: var(--muted); }
+.sum .pay td:last-child { color: var(--ink); }
+.sum__lines { max-height: 220px; overflow: auto; }
+.btn { display: flex; width: 100%; justify-content: center; align-items: center; gap: 8px; padding: 14px 18px; font-weight: 700; font-size: 14px; border: 1.5px solid var(--ink); background: none; cursor: pointer; transition: background .2s var(--ease), color .2s var(--ease); }
+.btn + .btn { margin-top: 8px; }
+.btn--main { background: var(--brick); border-color: var(--brick); color: #fff; }
+.btn--main:hover { background: #952129; border-color: #952129; }
+.btn:not(.btn--main):hover { background: var(--ink); color: #fff; }
+.sum__hint { margin: 12px 0 0; font: 300 italic 12.5px/1.4 "Open Sans"; color: var(--muted); min-height: 18px; }
+
+/* условия и реквизиты */
+.terms { border-top: 1px solid var(--hair); padding: 40px 0 64px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; font-size: 13.5px; }
+.terms ul { margin: 0; padding-left: 16px; }
+.terms li { margin-bottom: 4px; }
+.terms li::marker { color: var(--brick); }
+.terms p { margin: 0 0 4px; }
+
+/* телефон: итог прилипает к низу экрана */
+@media (max-width: 960px) {
+  .hero, .layout { grid-template-columns: 1fr; }
+  .hero .preview { justify-self: start; text-align: left; }
+  .sum { position: static; }
+  .terms { grid-template-columns: 1fr; }
+}
+@media (max-width: 640px) {
+  .extras, .base__grid { grid-template-columns: 1fr; }
+  .base { padding: 22px; }
+}
+.dock { display: none; position: fixed; left: 0; right: 0; bottom: 0; z-index: 20; background: var(--ink); color: #fff; padding: 12px 20px; align-items: center; justify-content: space-between; gap: 12px; }
+.dock b { font-size: 18px; }
+.dock a { color: #fff; font-weight: 700; font-size: 13px; text-decoration: none; border-bottom: 1px solid rgba(255,255,255,.5); }
+@media (max-width: 960px) { body { padding-bottom: 64px; } .dock { display: flex; } }   /* после базового .dock, иначе он перебьёт */
+
+/* печать: выбранный вариант на бумаге */
+@media print {
+  .top, .dock, .sum .btn, .sum__hint, .opt:not([aria-pressed="true"]) { display: none !important; }
+  .layout { grid-template-columns: 1fr 300px; }
+  .sum { position: static; }
+  body { font-size: 12px; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <img src="../assets/img/logo-gunmetal-mark.png" alt="CUBICA">
+    <span class="caps">Коммерческое предложение · 23 сентября 2026</span>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div>
+      <div class="caps">Для ООО «Архитектурное бюро «Кубика»</div>
+      <h1>Сайт бюро: соберите свой вариант</h1>
+      <p>Базовый пакет — новый имиджевый сайт по утверждённому превью. Ниже можно отметить дополнительные услуги: итог и график оплаты пересчитаются сразу. Отмеченный вариант сохраняется в ссылке — её можно переслать нам.</p>
+    </div>
+    <div class="preview">
+      <div class="caps">Превью сайта</div>
+      <a href="../index.html" target="_blank" rel="noopener">Открыть превью</a>
+    </div>
+  </section>
+
+  <div class="layout">
+    <div>
+      <h2>Базовый пакет, входит всегда</h2>
+      <section class="base" aria-label="Базовый пакет">
+        <div class="base__head">
+          <div><div class="caps">Срок 3 недели</div><b>Имиджевый сайт «под ключ»</b></div>
+          <div class="price">200 000 ₽</div>
+        </div>
+        <div class="base__grid">
+          <div><h3>Сайт по превью</h3><ul><li>Список проектов с раскрытием в ленту фото</li><li>Фильтры, поиск, страница «Бюро»</li><li>Заставка и живые кубы, версия для телефона</li></ul></div>
+          <div><h3>Страницы проектов</h3><ul><li>До 15 проектов: паспорт, фото, описание</li><li>Подготовка фото для сайта</li></ul></div>
+          <div><h3>Админка</h3><ul><li>Проекты, фото и тексты без программиста</li><li>Автоматическое сжатие фото, инструкция</li></ul></div>
+          <div><h3>Перенос и запуск</h3><ul><li>Переезд с Тильды, домен ab-cubica.ru, SSL</li><li>Настройка для поисковиков, проверка</li></ul></div>
+        </div>
+        <p class="base__note">30 дней после запуска бесплатно исправляем ошибки. Исходный код и материалы передаются бюро.</p>
+      </section>
+
+      <h2>Дополнительные услуги</h2>
+      <div class="extras" id="extras"></div>
+    </div>
+
+    <aside class="sum" aria-live="polite">
+      <div class="caps">Итого разово</div>
+      <div class="sum__total" id="total">200 000 ₽</div>
+      <div class="sum__monthly" id="monthly"></div>
+      <div class="sum__lines">
+        <table><tbody id="lines"></tbody></table>
+      </div>
+      <table class="pay"><tbody>
+        <tr><td>Предоплата, 50%</td><td id="pay1">100 000 ₽</td></tr>
+        <tr><td>При запуске, 50%</td><td id="pay2">100 000 ₽</td></tr>
+      </tbody></table>
+      <button class="btn btn--main" id="copyLink" type="button">Скопировать ссылку на мой выбор</button>
+      <button class="btn" id="copyText" type="button">Скопировать список текстом</button>
+      <button class="btn" id="print" type="button">Сохранить в PDF</button>
+      <p class="sum__hint" id="hint">Без НДС. Сроки дополнительных услуг согласуем отдельно.</p>
+    </aside>
+  </div>
+
+  <section class="terms">
+    <div>
+      <h2>Условия</h2>
+      <ul>
+        <li>Базовый пакет: 3 недели с момента предоплаты и получения материалов</li>
+        <li>Оплата 50% предоплата, 50% при запуске</li>
+        <li>Хостинг и домен бюро оплачивает провайдеру напрямую</li>
+        <li>Предложение действует 14 дней</li>
+      </ul>
+    </div>
+    <div>
+      <h2>Что нужно от бюро</h2>
+      <ul>
+        <li>Фото и сведения по проектам: год, площадь, заказчик, статус</li>
+        <li>Настоящие названия проектов в Казани</li>
+        <li>Доступ к домену и аккаунту Тильды на время переезда</li>
+      </ul>
+    </div>
+    <div>
+      <h2>Исполнитель</h2>
+      <p><b>ИП Мыльцев Иван Вячеславович</b></p>
+      <p>ИНН 183309463194</p>
+      <p>Р/с 40802810908040000096, АО «АЛЬФА-БАНК»</p>
+      <p>БИК 044525593, к/с 30101810200000000593</p>
+    </div>
+  </section>
+</main>
+
+<div class="dock" aria-hidden="true"><div><div class="caps" style="color:#aebac3">Итого</div><b id="dockTotal">200 000 ₽</b></div><a href="#total">Смотреть расчёт</a></div>
+
+<script>
+(function () {
+  // Дополнительные услуги. id короткий: попадает в ссылку с выбором клиента.
+  var BASE = 200000;
+  var OPTIONS = [
+    { id: 'deck', title: 'Презентация бюро для застройщиков', why: 'PDF на 15–20 слайдов в фирменном стиле: прикладывать к тендерам и письмам.', price: 45000 },
+    { id: 'en',   title: 'Английская версия сайта', why: 'Для федеральных и иностранных партнёров. Все страницы и админка на двух языках.', price: 40000 },
+    { id: 'club', title: 'Закрытый раздел для партнёров', why: 'Материалы по проекту по паролю: застройщик забирает всё в одном месте.', price: 35000 },
+    { id: 'map',  title: 'Карта проектов', why: 'Проекты Ижевска и Казани на карте: наглядно показать географию работы.', price: 25000 },
+    { id: 'news', title: 'Раздел «Новости и награды»', why: 'Urban Awards, конкурсы, публикации. Бюро добавляет записи само через админку.', price: 20000 },
+    { id: 'seo',  title: 'Старт в поиске', why: 'Яндекс Бизнес, 2ГИС и базовая оптимизация: чтобы находили по запросу «архитектурное бюро Ижевск».', price: 20000 },
+    { id: 'jobs', title: 'Раздел «Вакансии»', why: 'Для найма архитекторов и конструкторов, с формой отклика.', price: 15000 },
+    { id: 'video',title: 'Видео с дрона в проектах', why: 'Подготовка и встраивание уже снятых видео в карточки проектов.', price: 15000 },
+    { id: 'stats',title: 'Аналитика', why: 'Яндекс Метрика, Вебмастер и цели: понимать, кто и как смотрит сайт.', price: 10000 },
+    { id: 'care', title: 'Поддержка сайта', why: 'Правки, обновления и добавление проектов по вашей просьбе каждый месяц.', price: 8000, monthly: true }
+  ];
+
+  var fmt = function (n) { return n.toLocaleString('ru-RU').replace(/ /g, ' ') + ' ₽'; };
+  var chosen = {};
+
+  // выбор из ссылки: #sel=deck,en,map
+  var m = location.hash.match(/sel=([a-z,]+)/);
+  if (m) m[1].split(',').forEach(function (id) { chosen[id] = true; });
+
+  var box = '<svg class="opt__box" viewBox="0 0 24 24" aria-hidden="true">' +
+    '<polygon class="t" points="12,2 21,7 12,12 3,7"/>' +
+    '<polygon class="l" points="3,7 12,12 12,22 3,17"/>' +
+    '<polygon class="r" points="12,12 21,7 21,17 12,22"/></svg>';
+
+  var list = document.getElementById('extras');
+  OPTIONS.forEach(function (o) {
+    var b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'opt';
+    b.dataset.id = o.id;
+    b.setAttribute('aria-pressed', chosen[o.id] ? 'true' : 'false');
+    b.innerHTML = box + '<span class="opt__title">' + o.title + '</span>' +
+      '<span class="opt__why">' + o.why + '</span>' +
+      '<span class="opt__price">' + (o.monthly ? '+' + fmt(o.price) + ' <small>в месяц</small>' : '+' + fmt(o.price)) + '</span>';
+    b.addEventListener('click', function () {
+      chosen[o.id] = !chosen[o.id];
+      b.setAttribute('aria-pressed', chosen[o.id] ? 'true' : 'false');
+      update();
+    });
+    list.appendChild(b);
+  });
+
+  function selected() { return OPTIONS.filter(function (o) { return chosen[o.id]; }); }
+
+  function update() {
+    var sel = selected();
+    var once = BASE, monthly = 0;
+    var rows = '<tr><td>Базовый пакет</td><td>' + fmt(BASE) + '</td></tr>';
+    sel.forEach(function (o) {
+      if (o.monthly) monthly += o.price; else once += o.price;
+      rows += '<tr><td>' + o.title + '</td><td>' + (o.monthly ? fmt(o.price) + '/мес' : fmt(o.price)) + '</td></tr>';
+    });
+    document.getElementById('lines').innerHTML = rows;
+    document.getElementById('total').textContent = fmt(once);
+    document.getElementById('dockTotal').textContent = fmt(once);
+    document.getElementById('monthly').textContent = monthly ? '+ ' + fmt(monthly) + ' в месяц за поддержку' : '';
+    var half = Math.round(once / 2);
+    document.getElementById('pay1').textContent = fmt(half);
+    document.getElementById('pay2').textContent = fmt(once - half);
+    var ids = sel.map(function (o) { return o.id; }).join(',');
+    history.replaceState(null, '', ids ? '#sel=' + ids : location.pathname + location.search);
+  }
+
+  function hint(t) { var h = document.getElementById('hint'); h.textContent = t; setTimeout(function () { h.textContent = 'Без НДС. Сроки дополнительных услуг согласуем отдельно.'; }, 3500); }
+
+  function copy(text, ok) {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(function () { hint(ok); }, function () { prompt('Скопируйте вручную:', text); });
+    } else prompt('Скопируйте вручную:', text);
+  }
+
+  document.getElementById('copyLink').addEventListener('click', function () {
+    copy(location.href, 'Ссылка скопирована. Отправьте её нам — мы увидим ваш выбор.');
+  });
+  document.getElementById('copyText').addEventListener('click', function () {
+    var sel = selected(), once = BASE, monthly = 0;
+    var t = ['Сайт бюро «Кубика»: выбранный вариант', '— Базовый пакет: ' + fmt(BASE)];
+    sel.forEach(function (o) { if (o.monthly) monthly += o.price; else once += o.price; t.push('— ' + o.title + ': ' + fmt(o.price) + (o.monthly ? ' в месяц' : '')); });
+    t.push('Итого разово: ' + fmt(once) + ' (без НДС)');
+    if (monthly) t.push('Ежемесячно: ' + fmt(monthly));
+    t.push('Ссылка: ' + location.href);
+    copy(t.join('\n'), 'Список скопирован.');
+  });
+  document.getElementById('print').addEventListener('click', function () { window.print(); });
+
+  update();
+})();
+</script>
+</body>
+</html>
